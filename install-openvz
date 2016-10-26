@@ -4,3 +4,20 @@ rpm --import http://download.openvz.org/RPM-GPG-Key-OpenVZ
 yum search vzkernel
 yum install vzkernel
 vi /boot/grub/menu.lst
+yum install vzctl vzquota
+vi /etc/sysctl.conf
+sysctl -p
+vi /etc/sysconfig/selinux
+uname -r
+cd /vz/template/cache
+wget http://download.openvz.org/template/precreated/ubuntu-14.04-x86_64-minimal.tar.gz
+yum -y install ploop
+vzctl create 101 --ostemplate ubuntu-14.04-x86_64-minimal --config basic
+vzctl set 101 --onboot yes --save
+vzctl set 101 --hostname test1.ubuntu14.com --save
+vzctl set 101 --ipadd 192.168.0.101 --save
+vzctl set 101 --numothersock 120 --save
+vzctl set 101 --nameserver 8.8.8.8 --nameserver 8.8.4.4 --nameserver 145.253.2.75 --save
+vzctl start 101
+vzctl exec 101 passwd
+
