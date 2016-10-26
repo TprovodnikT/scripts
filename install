@@ -1,0 +1,6 @@
+cd /etc/yum.repos.d
+wget http://download.openvz.org/openvz.repo
+rpm --import http://download.openvz.org/RPM-GPG-Key-OpenVZ
+yum search vzkernel
+yum install vzkernel
+vi /boot/grub/menu.lst
