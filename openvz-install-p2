@@ -12,12 +12,18 @@ function wait_response {
     fi
 }
 
+function enter_parameter {
+  echo $1;
+  read param;
+  echo "Param $param";
+  eval "$2='$param'";
+  return $param;
+}
 
 function changeDir {
     cd $1;
 }
 
-wait_response;
 changeDir '/vz/template/cache';
 #cd /vz/template/cache
 wait_response;
@@ -26,28 +32,39 @@ wget -P /vz/template/cache http://download.openvz.org/template/precreated/ubuntu
 wait_response;
 echo 'yum -y install ploop';
 yum -y install ploop
+#wait_response;
+
+enter_parameter "Enter number of virtual machine::" vz_num;
+echo "vzctl create $vz_num --ostemplate ubuntu-14.04-x86_64-minimal --config basic";
+vzctl create $vz_num --ostemplate ubuntu-14.04-x86_64-minimal --config basic
 wait_response;
-echo 'vzctl create 101 --ostemplate ubuntu-14.04-x86_64-minimal --config basic';
-vzctl create 101 --ostemplate ubuntu-14.04-x86_64-minimal --config basic
+echo "vzctl set $vz_num --onboot yes --save";
+vzctl set $vz_num --onboot yes --save
+#wait_response;
+enter_parameter "Enter name of virtual machine::" vz_name;
+echo "vzctl set $vz_num --hostname $vz_name --save";
+vzctl set $vz_num --hostname $vz_name --save;
+#wait_response;
+enter_parameter "Enter ip of virtual machine::" vz_ip;
+echo "vzctl set $vz_num --ipadd $vz_ip --save";
+vzctl set $vz_num --ipadd $vz_ip --save
+
+
+enter_parameter "Enter disk of virtual machine::" vz_disk;
+echo "vzctl set $vz_num --diskspace $vz_disk --save";
+vzctl set $vz_num --diskspace $vz_disk --save;
+
 wait_response;
-echo 'vzctl set 101 --onboot yes --save';
-vzctl set 101 --onboot yes --save
+echo "vzctl set $vz_num --numothersock 120 --save";
+vzctl set $vz_num --numothersock 120 --save
 wait_response;
-echo 'vzctl set 101 --hostname test1.ubuntu14.com --save';
+echo "vzctl set $vz_num --nameserver 8.8.8.8 --nameserver 8.8.4.4 --nameserver 145.253.2.75 --save";
+vzctl set $vz_num --nameserver 8.8.8.8 --nameserver 8.8.4.4 --nameserver 145.253.2.75 --save
 wait_response;
-echo 'vzctl set 101 --ipadd 192.168.0.101 --save';
-vzctl set 101 --ipadd 192.168.0.101 --save
+echo "vzctl start $vz_num";
+vzctl start $vz_num
 wait_response;
-echo 'vzctl set 101 --numothersock 120 --save';
-vzctl set 101 --numothersock 120 --save
-wait_response;
-echo 'vzctl set 101 --nameserver 8.8.8.8 --nameserver 8.8.4.4 --nameserver 145.253.2.75 --save';
-vzctl set 101 --nameserver 8.8.8.8 --nameserver 8.8.4.4 --nameserver 145.253.2.75 --save
-wait_response;
-echo 'vzctl start 101';
-vzctl start 101
-wait_response;
-echo 'vzctl exec 101 passwd';
-vzctl exec 101 passwd
+echo "vzctl exec $vz_num passwd";
+vzctl exec $vz_num passwd
 wait_response;
 
