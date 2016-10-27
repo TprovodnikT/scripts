@@ -29,6 +29,7 @@ wait_response;
 vi /etc/sysctl.conf
 sysctl -p
 wait_response;
+vi /etc/vz/vz.conf
 vi /etc/sysconfig/selinux
 echo 'uname -r';
 uname -r
