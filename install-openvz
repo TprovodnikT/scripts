@@ -10,8 +10,13 @@ function wait_response {
        exit;
     fi
 }
-#cd /etc/yum.repos.d
 
+
+function changeDir {
+    cd $1;
+}
+#cd /etc/yum.repos.d
+changeDir '/etc/yum.repos.d';
 echo 'rpm --import http://download.openvz.org/RPM-GPG-Key-OpenVZ';
 wget -P /etc/yum.repos.d  http://download.openvz.org/openvz.repo
 wait_response;
@@ -36,6 +41,7 @@ vi /etc/sysconfig/selinux
 echo 'uname -r';
 uname -r
 wait_response;
+changeDir '/vz/template/cache';
 #cd /vz/template/cache
 wait_response;
 echo 'wget -P /vz/template/cache http://download.openvz.org/template/precreated/ubuntu-14.04-x86_64-minimal.tar.gz';
