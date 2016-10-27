@@ -1,0 +1,44 @@
+#!/bin/bash
+IFS=
+function wait_response {
+    echo "Do you wish to continue?"
+    read -s -n 1 key  
+    if [[ $key = "" ]]; then 
+       echo "Continue";
+    elif [[  $key = "c" ]]; then
+       echo "Exit";
+       exit;
+    fi
+}
+
+
+function changeDir {
+    cd $1;
+}
+#cd /etc/yum.repos.d
+changeDir '/etc/yum.repos.d';
+echo 'rpm --import http://download.openvz.org/RPM-GPG-Key-OpenVZ';
+wget -P /etc/yum.repos.d  http://download.openvz.org/openvz.repo
+wait_response;
+echo 'rpm --import http://download.openvz.org/RPM-GPG-Key-OpenVZ';
+rpm --import http://download.openvz.org/RPM-GPG-Key-OpenVZ
+wait_response;
+echo 'yum search vzkernel';
+yum search vzkernel
+wait_response;
+echo 'yum install vzkernel';
+yum install vzkernel
+wait_response;
+vi /boot/grub/menu.lst
+echo 'yum install vzctl vzquota';
+yum install vzctl vzquota
+wait_response;
+vi /etc/sysctl.conf
+sysctl -p
+wait_response;
+vi /etc/vz/vz.conf
+vi /etc/sysconfig/selinux
+echo 'uname -r';
+uname -r
+wait_response;
+reboot;

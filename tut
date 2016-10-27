@@ -1,8 +1,0 @@
-#!/bin/bash
-
-function changeDir {
-    cd $1;
-}
-
-changeDir '/root/';
-touch x;
