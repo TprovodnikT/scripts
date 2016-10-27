@@ -1,12 +1,14 @@
 #!/bin/bash
+IFS=
 function wait_response {
     echo "Do you wish to continue?"
-    select yn in "Yes" "No"; do
-    case $yn in
-        Yes ) make install; break;;
-        No ) exit;;
-    esac
-done
+    read -s -n 1 key  
+    if [[ $key = "" ]]; then 
+       echo "Continue";
+    elif [[  $key = "c" ]]; then
+       echo "Exit";
+       exit;
+    fi
 }
 #cd /etc/yum.repos.d
 
