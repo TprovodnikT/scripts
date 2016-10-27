@@ -1,23 +1,52 @@
-cd /etc/yum.repos.d
-wget http://download.openvz.org/openvz.repo
+#!/bin/bash
+function wait_response {
+    echo "Do you wish to continue?"
+    select yn in "Yes" "No"; do
+    case $yn in
+        Yes ) make install; break;;
+        No ) exit;;
+    esac
+done
+}
+#cd /etc/yum.repos.d
+
+wget -P /etc/yum.repos.d  http://download.openvz.org/openvz.repo
+wait_response;
 rpm --import http://download.openvz.org/RPM-GPG-Key-OpenVZ
+wait_response;
 yum search vzkernel
+wait_response;
 yum install vzkernel
+wait_response;
 vi /boot/grub/menu.lst
 yum install vzctl vzquota
+wait_response;
 vi /etc/sysctl.conf
 sysctl -p
+wait_response;
 vi /etc/sysconfig/selinux
 uname -r
+wait_response;
 cd /vz/template/cache
+wait_response;
 wget http://download.openvz.org/template/precreated/ubuntu-14.04-x86_64-minimal.tar.gz
+wait_response;
 yum -y install ploop
+wait_response;
 vzctl create 101 --ostemplate ubuntu-14.04-x86_64-minimal --config basic
+wait_response;
 vzctl set 101 --onboot yes --save
+wait_response;
 vzctl set 101 --hostname test1.ubuntu14.com --save
+wait_response;
 vzctl set 101 --ipadd 192.168.0.101 --save
+wait_response;
 vzctl set 101 --numothersock 120 --save
+wait_response;
 vzctl set 101 --nameserver 8.8.8.8 --nameserver 8.8.4.4 --nameserver 145.253.2.75 --save
+wait_response;
 vzctl start 101
+wait_response;
 vzctl exec 101 passwd
+wait_response;
 
