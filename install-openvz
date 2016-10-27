@@ -10,43 +10,59 @@ done
 }
 #cd /etc/yum.repos.d
 
+echo 'rpm --import http://download.openvz.org/RPM-GPG-Key-OpenVZ';
 wget -P /etc/yum.repos.d  http://download.openvz.org/openvz.repo
 wait_response;
+echo 'rpm --import http://download.openvz.org/RPM-GPG-Key-OpenVZ';
 rpm --import http://download.openvz.org/RPM-GPG-Key-OpenVZ
 wait_response;
+echo 'yum search vzkernel';
 yum search vzkernel
 wait_response;
+echo 'yum install vzkernel';
 yum install vzkernel
 wait_response;
 vi /boot/grub/menu.lst
+echo 'yum install vzctl vzquota';
 yum install vzctl vzquota
 wait_response;
 vi /etc/sysctl.conf
 sysctl -p
 wait_response;
 vi /etc/sysconfig/selinux
+echo 'uname -r';
 uname -r
 wait_response;
-cd /vz/template/cache
+#cd /vz/template/cache
 wait_response;
-wget http://download.openvz.org/template/precreated/ubuntu-14.04-x86_64-minimal.tar.gz
+echo 'wget -P /vz/template/cache http://download.openvz.org/template/precreated/ubuntu-14.04-x86_64-minimal.tar.gz';
+wget -P /vz/template/cache http://download.openvz.org/template/precreated/ubuntu-14.04-x86_64-minimal.tar.gz
 wait_response;
+echo 'yum -y install ploop';
 yum -y install ploop
 wait_response;
+echo 'vzctl create 101 --ostemplate ubuntu-14.04-x86_64-minimal --config basic';
 vzctl create 101 --ostemplate ubuntu-14.04-x86_64-minimal --config basic
 wait_response;
+echo 'vzctl set 101 --onboot yes --save';
 vzctl set 101 --onboot yes --save
 wait_response;
+echo 'vzctl set 101 --hostname test1.ubuntu14.com --save';
 vzctl set 101 --hostname test1.ubuntu14.com --save
 wait_response;
+echo 'vzctl set 101 --ipadd 192.168.0.101 --save';
 vzctl set 101 --ipadd 192.168.0.101 --save
 wait_response;
+echo 'vzctl set 101 --numothersock 120 --save';
 vzctl set 101 --numothersock 120 --save
 wait_response;
+echo 'vzctl set 101 --nameserver 8.8.8.8 --nameserver 8.8.4.4 --nameserver 145.253.2.75 --save';
 vzctl set 101 --nameserver 8.8.8.8 --nameserver 8.8.4.4 --nameserver 145.253.2.75 --save
 wait_response;
+echo 'vzctl start 101';
 vzctl start 101
 wait_response;
+echo 'vzctl exec 101 passwd';
 vzctl exec 101 passwd
 wait_response;
 
